@@ -8,16 +8,16 @@ for expr in data:
 
     password = splitted[1].lstrip()
     letter = splitted[0][-1]
-    (lower, upper) = splitted[0][:-1].strip().split("-")
+    (lower, upper) = map(int, splitted[0][:-2].split("-"))
 
-    if int(lower) <= password.count(letter) <= int(upper):
+    if lower <= password.count(letter) <= upper:
         valid_pass_count_1_star += 1
 
     if (
-        password[int(lower) - 1] == letter
-        and not password[int(upper) - 1] == letter
-        or not password[int(lower) - 1] == letter
-        and password[int(upper) - 1] == letter
+        password[lower - 1] == letter
+        and not password[upper - 1] == letter
+        or not password[lower - 1] == letter
+        and password[upper - 1] == letter
     ):
         valid_pass_count_2_star += 1
 
