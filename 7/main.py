@@ -27,3 +27,29 @@ for inner_bags in data.values():
             break
 
 print(found)
+
+### second star
+
+with open("input.txt") as f:
+    data = dict(
+        re.sub(r"\sbag[s]?", "", line).split(" contain ")
+        for line in f.read().splitlines()
+    )
+    data = {key: val.strip(" .").split(", ") for key, val in data.items()}
+
+
+@cache
+def count_bag(bag):
+    sum_ = 0
+    for inner_bags in data[bag]:
+        count, name = inner_bags.split(" ", 1)
+        if name == "other":
+            continue
+        inner_count = count_bag(name)
+        sum_ += int(count) + int(count) * inner_count
+    return sum_
+
+output = count_bag("shiny gold")
+
+print(output)
+
