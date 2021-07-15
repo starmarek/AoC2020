@@ -1,27 +1,29 @@
 import re
-import time
+from functools import cache
 
 looking_for = "shiny gold"
 found = 0
-with open("input.txt", "r") as f:
+with open("input.txt") as f:
     data = dict(
         re.sub(r"\d", "", re.sub(r"\sbag[s]?", "", line)).split(" contain ")
         for line in f.read().splitlines()
     )
+    data = {key: val.strip(" .").split(",  ") for key, val in data.items()}
 
-def rec(val):
-    global found
-    if looking_for in val:
-        found += 1
+@cache
+def check_bag(bag):
+    if looking_for in bag:
         return True
-    if "no other" in val:
+    if "no other" in bag:
         return False
-    for bag in val.strip(" .").split(",  "):
-        if rec(data[bag]):
+    for inner_bag in data[bag]:
+        if check_bag(inner_bag):
             return True
-begin = time.time()    
-for val in data.values():
-    rec(val)
-end = time.time()
+        
+for inner_bags in data.values():
+    for bag in inner_bags:
+        if check_bag(bag):
+            found += 1
+            break
+
 print(found)
-print(end-begin)
